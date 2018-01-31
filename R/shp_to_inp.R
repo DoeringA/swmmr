@@ -145,18 +145,21 @@ shp_to_inp <- function(path_options = NULL, path_polygon = NULL, subcatchment_ty
       list_of_sections[['subcatchments']]  <- subcatchment # subcatchment_typologies
       list_of_sections[['subareas']] <- subcatchment # subcatchment_typologies
       list_of_sections[['polygons']] <- subcatchment
-      if(list_of_sections$options$INFILTRATION == "Horton"){
-        list_of_sections[['infiltration']] <- list("Horton", subcatchment) # infiltration
-      }else{
-        if(list_of_sections$options$INFILTRATION == "GREEN_AMPT"){
-          list_of_sections[['infiltration']] <- list("Green_Ampt", subcatchment)
-        }else{
-        warning("Function is only running with Horton or Green_Ampt infiltration.")
-      }
-      
     }else{
       stop("The polygon file has to include at least the columns named: Name, Outlet, Area, RouteTo. For optional column names ckeck the documentation.")
     }
+	
+	# check infiltration model
+    if(list_of_sections$options$INFILTRATION == "Horton"){
+    list_of_sections[['infiltration']] <- list("Horton", subcatchment) # infiltration
+  }else{
+    if(list_of_sections$options$INFILTRATION == "GREEN_AMPT"){
+      list_of_sections[['infiltration']] <- list("Green_Ampt", subcatchment)
+    }else{
+      warning("Function is only running with Horton or Green_Ampt infiltration.")
+    }
+  }
+	
   }
 
   
@@ -346,7 +349,7 @@ shp_to_inp <- function(path_options = NULL, path_polygon = NULL, subcatchment_ty
       warning("Roughness is not defined in line.shp or Conduit_material. Check line.shp for completeness otherwise missing parameters in the sections conduits will be filled with default values.")
     }
   }else{
-    if(!("Material" %in% colnames(subcatchment))){
+    if(!("Material" %in% colnames(conduits))){
       stop("column Material is missing in line.shp")
     }
   }
